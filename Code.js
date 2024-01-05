@@ -1,30 +1,3 @@
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Google Sheets and Google Apps Script Project Information.
-// Google Sheets Project Name      : TestDBAttendanceProj
-// Google Sheets ID                : 1rVQqt9fC9PmtYNX0rCKmiHJxTCTHGIxO74zfj2FLGqA
-// Sheet Name (for user data)      : User_Data
-// Sheet Name (for for attendance) : Attendance
-
-// sheet "User_Data"
-// Name | UID
-
-// sheet "Attendance"
-// Name | UID | Date | Time In | Time Out
-
-// Google Apps Script Project Name : AttendanceBE
-// Web app URL                     : https://script.google.com/macros/s/AKfycbw-Xeh9r9aqHKI463GOSZWGrkYtE5dUAJzw7BK2zAj96Cyt6UKfP3621rbiznvJOYxXww/exec
-
-// Web app URL Test (Registration) :
-// ?sts=reg&uid=A01
-
-// Web app URL Test (Attendance)   :
-// ?sts=atc&uid=A01&ti=10:15:30&date=3/1/2023
-// ?sts=atc&uid=B01&ti=6:15:30&date=3/1/2023
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Attendance and Registration Mode.
-//________________________________________________________________________________doGet()
-// doGet({"parameter":{"uid":"A01","sts":"atc"},"queryString":"sts=atc&uid=A01","contentLength":-1,"parameters":{"uid":["A01"],"sts":["atc"]},"contextPath":""});
 
 function doGet(e) { 
   Logger.log(JSON.stringify(e));
@@ -34,26 +7,23 @@ function doGet(e) {
   }
   else {
 /****************************************** CHANGE HERE **************************************/
-/*-------------------------------------------------------------------------------------------*/
-    var sheet_id = '1rVQqt9fC9PmtYNX0rCKmiHJxTCTHGIxO74zfj2FLGqA'; 	// Spreadsheet ID.
-    var sheet_UD = 'User_Data';  // Sheet name for user data.
-    var sheet_AT = 'Attendance';  // Sheet name for attendance.
-    var sheet_TAT = 'Time_Attendance';  // Sheet name for attendance.
+/*---------------------Dán link vào vị trí sau----------------------*/
+    var sheet_id = '1TbwBEwMO7kspn4gCFiH3YdPIrq60ZOCM6Jjztmh_Yvw'; 	// Spreadsheet ID.
+ 
 /*-------------------------------------------------------------------------------------------*/
 /*********************************************************************************************/
+    var sheet_UD = 'khai_bao_ten';  // Sheet name for user data.
+    var sheet_AT = 'diem_danh';  // Sheet name for attendance.   
+    var sheet_TAT = 'thoi_gian_ca_lam_viec';  // Sheet name for attendance.
+
 
     var sheet_open = SpreadsheetApp.openById(sheet_id);
     var sheet_user_data = sheet_open.getSheetByName(sheet_UD);
     var sheet_attendence = sheet_open.getSheetByName(sheet_AT);
     var sheet_time_attendence = sheet_open.getSheetByName(sheet_TAT);
-    
-    // sts_val is a variable to hold the status sent by ESP32.
-    // sts_val will contain "reg" or "atc".
-    // "reg" = new user registration.
-    // "atc" = attendance (time in and time out).
+
     var sts_val = ""; 
-    
-    // uid_val is a variable to hold the UID of the RFID card or keychain sent by the ESP32.
+
     var uid_val = "";
     var timeIn_val = "";
     var timeOut_val = "";
@@ -146,10 +116,7 @@ function doGet(e) {
         result += ",atcErr01"; // atcErr01 = UID not registered.
         return ContentService.createTextOutput(result);
       } else {
-        // After the UID has been checked and the result is that the UID has been registered,
-        // then take the "name" of the UID owner from the "user data" sheet.
-        // The name of the UID owner is in column "A" on the "user data" sheet.
-        // Because the result of findUID() is in Row Index - 2, then + 2 to get the row of the UID
+       
         var get_Range = sheet_user_data.getRange("A" + (FUID+2));
         var get_Time_Range = sheet_time_attendence.getRange("A2:C2");
         var user_name_by_UID = get_Range.getValue();
@@ -172,13 +139,9 @@ function doGet(e) {
           return ContentService.createTextOutput(result);
         }
 
-        // Variables to determine attendance filling, whether to fill in "Time In", "Time Out" or attendance has been completed for today.
-        
-        // Variable to get row position. This is used to fill in "Time Out".
         var num_row = 0;
         
-        // Variables to get the current Date and Time.
-        // var Curr_Date = Utilities.formatDate(new Date(), "Asia/Jakarta", 'dd/MM/yyyy');
+      
         var Curr_Date = dateReg_val;//Utilities.formatDate(new Date(), "Asia/Jakarta", 'dd/MM/yyyy');
         // var Curr_Time = Utilities.formatDate(new Date(), "Asia/Jakarta", 'HH:mm:ss');
         var Curr_Time = (enter_data == "time_in" ? timeIn_val : timeOut_val);//Utilities.formatDate(new Date(), "Asia/Jakarta", 'HH:mm:ss');

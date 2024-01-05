@@ -3,5 +3,5 @@
 - Vào đây để lấy code dán vào phần google sheets [link](Code.js)
   
 <picture>
-  <img src="https://github.com/HuuPhuoc2411/FFT-Project/blob/main/image/gio1.jpg" alt="..." width="550" />
+  <img src="342.jpg" alt="..." width="550" />
 </picture>
